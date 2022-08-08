@@ -255,7 +255,31 @@ def instance_norm(net, train=True,weight_decay=0.00001):
     normalized = (net - mu) / tf.square(sigma_sq + epsilon)
     return scale * normalized + shift
 
+"""이미지의 Convolution Layer 구성
 
+Args:
+	filters(int):
+    	  * 가중치를 담고있는 kernel 개수랑 동일한 의미를 갖는다.
+          * 위 그림에서는 (W0, W1) 두개의 필터를 갖고 있는것을 확인할 수 있다.
+          ※ 해당 값은 Output 특징맵의 Channel값이 된다.
+        
+        kernel_size(tuple):
+          * filter(kernel)의 size
+          * (height, widhth)
+          
+        padding(str):
+          * 합성곱 연산을 수행하기 전, 입력데이터 주변을 특정값으로 채워 늘리는 것
+          * 입력값으로 0 | 'valid' | 'same' 값을 선택할 수 있다.
+          
+        input_shape(tuple):
+          * conv2d Layer에 입력되는 이미지의 크기
+          * (height, width, channel|depth) 로, 3개의 원소로 구성
+          * channel|depth는 컬러이미지(R,G,B)의 경우 3, 흑백이미지의 경우 1값을 갖음
+          
+        stride(int|tuple):
+          * 입력데이터에 필터를 적용(합성곱연산)할 때 이동할 간격을 조절
+          * stirde 높을수록, output특징맵의 차원수가 작아짐 
+"""
 def conv1d(inputs,
            num_output_channels,
            kernel_size,
