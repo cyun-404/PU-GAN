@@ -93,9 +93,7 @@ def down_block(inputs,up_ratio,scope='down_block',is_training=True,bn_decay=None
 
 
 def feature_extraction(inputs, scope='feature_extraction2', is_training=True, bn_decay=None):
-
     with tf.variable_scope(scope,reuse=tf.AUTO_REUSE):
-
         use_bn = False
         use_ibn = False
         growth_rate = 24
@@ -121,7 +119,7 @@ def feature_extraction(inputs, scope='feature_extraction2', is_training=True, bn
         l2_features, l2_idx = dense_conv(l2_features, growth_rate=growth_rate, n=dense_n, k=knn,
                                                   scope="layer2", is_training=is_training, bn=use_bn, bn_decay=bn_decay)
         l2_features = tf.concat([l2_features, l1_features], axis=-1)  # 84+(24*2+12)=144
-
+        
         l3_features = conv1d(l2_features, comp, 1,  # 48
                                      padding='VALID', scope='layer3_prep', is_training=is_training, bn=use_bn, ibn=use_ibn,
                                      bn_decay=bn_decay)  # 48
@@ -135,9 +133,7 @@ def feature_extraction(inputs, scope='feature_extraction2', is_training=True, bn
         l4_features, l3_idx = dense_conv(l4_features, growth_rate=growth_rate, n=dense_n, k=knn,
                                                   scope="layer4", is_training=is_training, bn=use_bn, bn_decay=bn_decay)
         l4_features = tf.concat([l4_features, l3_features], axis=-1)  # 204+(24*2+12)=264
-
         l4_features = tf.expand_dims(l4_features, axis=2)
-
     return l4_features
 
 def up_projection_unit(inputs,up_ratio,scope="up_projection_unit",is_training=True,bn_decay=None):
