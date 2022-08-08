@@ -104,9 +104,10 @@ def feature_extraction(inputs, scope='feature_extraction2', is_training=True, bn
         l0_features = tf.expand_dims(inputs, axis=2)
         #  배열의 차원을 늘려줍니다.input에는 늘려질 배열을 넣습니다.axis는 몇 번째 차원의 크기를 늘릴 건지 숫자를 넣습니다.
 
-        l0_features = conv2d(l0_features, 24, [1, 1],
+        l0_features = conv2d(l0_features, 24, [1, 1],  # input, num_output_channels, kernel_size
                                      padding='VALID', scope='layer0', is_training=is_training, bn=use_bn, ibn=use_ibn,
                                      bn_decay=bn_decay, activation_fn=None)
+        #1X1 사이즈의 
         
         l0_features = tf.squeeze(l0_features, axis=2)
 
