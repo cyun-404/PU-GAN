@@ -94,17 +94,20 @@ def down_block(inputs,up_ratio,scope='down_block',is_training=True,bn_decay=None
 
 def feature_extraction(inputs, scope='feature_extraction2', is_training=True, bn_decay=None):
     with tf.variable_scope(scope,reuse=tf.AUTO_REUSE):
-        use_bn = False
-        use_ibn = False
+        use_bn = False         # using batch_norm or not
+        use_ibn = False        # bool, default False  # Whether use Instance-Batch Normalization.
         growth_rate = 24
 
         dense_n = 3
         knn = 16
         comp = growth_rate*2
         l0_features = tf.expand_dims(inputs, axis=2)
+        #  배열의 차원을 늘려줍니다.input에는 늘려질 배열을 넣습니다.axis는 몇 번째 차원의 크기를 늘릴 건지 숫자를 넣습니다.
+
         l0_features = conv2d(l0_features, 24, [1, 1],
                                      padding='VALID', scope='layer0', is_training=is_training, bn=use_bn, ibn=use_ibn,
                                      bn_decay=bn_decay, activation_fn=None)
+        
         l0_features = tf.squeeze(l0_features, axis=2)
 
         # encoding layer
@@ -119,7 +122,7 @@ def feature_extraction(inputs, scope='feature_extraction2', is_training=True, bn
         l2_features, l2_idx = dense_conv(l2_features, growth_rate=growth_rate, n=dense_n, k=knn,
                                                   scope="layer2", is_training=is_training, bn=use_bn, bn_decay=bn_decay)
         l2_features = tf.concat([l2_features, l1_features], axis=-1)  # 84+(24*2+12)=144
-        
+
         l3_features = conv1d(l2_features, comp, 1,  # 48
                                      padding='VALID', scope='layer3_prep', is_training=is_training, bn=use_bn, ibn=use_ibn,
                                      bn_decay=bn_decay)  # 48
