@@ -463,9 +463,9 @@ def get_edge_feature(point_cloud, k=16, idx=None):
 
     # [N, P, K, Dim]
     point_cloud_neighbors = tf.gather_nd(point_cloud, idx)
-    point_cloud_central = tf.expand_dims(point_cloud, axis=-2)
+    point_cloud_central = tf.expand_dims(point_cloud, axis=-2)         # 차원을 확장해주는 함수
 
-    point_cloud_central = tf.tile(point_cloud_central, [1, 1, k, 1])
+    point_cloud_central = tf.tile(point_cloud_central, [1, 1, k, 1])   #   raw 데이터의 특정 차원을 원래의 값으로 복사
 
     edge_feature = tf.concat(
         [point_cloud_central, point_cloud_neighbors - point_cloud_central], axis=-1)
@@ -478,7 +478,7 @@ def dense_conv(feature, n=3,growth_rate=64, k=16, scope='dense_conv',**kwargs):
             if i == 0:
                 y = tf.concat([
                     conv2d(y, growth_rate, [1, 1], padding='VALID', scope='l%d' % i, **kwargs),
-                    tf.tile(tf.expand_dims(feature, axis=2), [1, 1, k, 1])], axis=-1)
+                    tf.tile(tf.expand_dims(feature, axis=2), [1, 1, k, 1])], axis=-1)            #   raw 데이터의 특정 차원을 원래의 값으로 복사
             elif i == n-1:
                 y = tf.concat([
                     conv2d(y, growth_rate, [1, 1], padding='VALID', scope='l%d' % i, activation_fn=None, **kwargs),
@@ -487,7 +487,7 @@ def dense_conv(feature, n=3,growth_rate=64, k=16, scope='dense_conv',**kwargs):
                 y = tf.concat([
                     conv2d(y, growth_rate, [1, 1], padding='VALID', scope='l%d' % i, **kwargs),
                     y], axis=-1)
-        y = tf.reduce_max(y, axis=-2)
+        y = tf.reduce_max(y, axis=-2)  # 지정한 차원을 따라 최댓값을 계산
         return y,idx
 
 def normalize_point_cloud(pc):
