@@ -59,9 +59,9 @@ def _group_point_grad(op, grad_out):
 # A shape is (N, P_A, C), B shape is (N, P_B, C)
 # D shape is (N, P_A, P_B)
 def batch_distance_matrix_general(A, B):
-    r_A = tf.reduce_sum(A * A, axis=2, keep_dims=True)
-    r_B = tf.reduce_sum(B * B, axis=2, keep_dims=True)
-    m = tf.matmul(A, tf.transpose(B, perm=(0, 2, 1)))
+    r_A = tf.reduce_sum(A * A, axis=2, keep_dims=True)  # 텐서의 차원들을 탐색하며 개체들의 총합을 계산함. 특정 차원을 제거하고 합계 구함
+    r_B = tf.reduce_sum(B * B, axis=2, keep_dims=True)  # keep_dims=True : 최초의 차원수와 동일하게 차원수를 유지한다.
+    m = tf.matmul(A, tf.transpose(B, perm=(0, 2, 1)))   # tf.matmul: 행렬 곱, tf.transpose(): 텐서의 행과 열 전치
     D = r_A - 2 * m + tf.transpose(r_B, perm=(0, 2, 1))
     return D
 
