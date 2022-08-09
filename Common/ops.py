@@ -97,21 +97,22 @@ def feature_extraction(inputs, scope='feature_extraction2', is_training=True, bn
         use_bn = False         # using batch_norm or not
         use_ibn = False        # bool, default False  # Whether use Instance-Batch Normalization.
         growth_rate = 24
-
         dense_n = 3
         knn = 16
         comp = growth_rate*2
         l0_features = tf.expand_dims(inputs, axis=2)
         #  배열의 차원을 늘려줍니다.input에는 늘려질 배열을 넣습니다.axis는 몇 번째 차원의 크기를 늘릴 건지 숫자를 넣습니다.
 
-        l0_features = conv2d(l0_features,  # inputs: 4-D tensor variable BxHxWxC
-			     24,           # num_output_channels: int
-			     [1, 1],       # kernel_size: a list of 2 ints
-                             padding='VALID', scope='layer0', is_training=is_training, bn=use_bn, ibn=use_ibn,
+        l0_features = conv2d(l0_features,      # inputs: 4-D tensor variable BxHxWxC
+			     24,               # num_output_channels: int (가중치를 담고있는 kernel 개수랑 동일한 의미를 갖는다.)
+			     [1, 1],           # kernel_size: a list of 2 ints
+                             padding='VALID',  #  경계 처리 방법을 정의합니다. 유효한 영역만 출력이 됩니다. 따라서 출력 이미지 사이즈는 입력 사이즈보다 작습니다.
+			     scope='layer0', is_training=is_training, bn=use_bn, ibn=use_ibn,
                              bn_decay=bn_decay, activation_fn=None)
-        #1X1 사이즈의 
+        # 1X1 사이즈의 24개의 kernel(filter)를 거쳐 이미지의 특성맵ouptut을 추출한다. 24개의 kernel(filter)를 거치기 때문에 output 특징맵은 24개의 channel을 갖는다.
+        # 학습을 진행해가며, 해당 층의 24개의 kernel의 가중치는 epoch마다 업데이트 될 것이다.
         
-        l0_features = tf.squeeze(l0_features, axis=2)
+	l0_features = tf.squeeze(l0_features, axis=2) # 차원 중 사이즈가 1인 것을 찾아 스칼라값으로 바꿔 해당 차원을 제거
 
         # encoding layer
         l1_features, l1_idx = dense_conv(l0_features, growth_rate=growth_rate, n=dense_n, k=knn,
