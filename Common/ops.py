@@ -78,7 +78,7 @@ def down_block(inputs,up_ratio,scope='down_block',is_training=True,bn_decay=None
     with tf.variable_scope(scope,reuse=tf.AUTO_REUSE):
         net = inputs
         net = tf.reshape(net,[tf.shape(net)[0],up_ratio,-1,tf.shape(net)[-1]])
-        net = tf.transpose(net, [0, 2, 1, 3])
+        net = tf.transpose(net, [0, 2, 1, 3]) # 행렬을 전치 tf.transpose(전치할 행렬, 차원의 순서, [오퍼레이션 명칭])
 
         net = conv2d(net, 256, [1, up_ratio],
                                  padding='VALID', stride=[1, 1],
