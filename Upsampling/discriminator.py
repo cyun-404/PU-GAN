@@ -22,16 +22,16 @@ class Discriminator(object):
             inputs = tf.expand_dims(inputs,axis=2)  # axis로 지정된 차원을 추가
             with tf.variable_scope('encoder_0', reuse=tf.AUTO_REUSE):
                 features = ops.mlp_conv(inputs, [self.start_number, self.start_number * 2])
-                features_global = tf.reduce_max(features, axis=1, keep_dims=True, name='maxpool_0')
+                features_global = tf.reduce_max(features, axis=1, keep_dims=True, name='maxpool_0') # 지정한 차원을 따라 최댓값을 계산
                 features = tf.concat([features, tf.tile(features_global, [1, tf.shape(inputs)[1],1, 1])], axis=-1)
                 features = ops.attention_unit(features, is_training=self.is_training)
             with tf.variable_scope('encoder_1', reuse=tf.AUTO_REUSE):
                 features = ops.mlp_conv(features, [self.start_number * 4, self.start_number * 8])
-                features = tf.reduce_max(features, axis=1, name='maxpool_1')
+                features = tf.reduce_max(features, axis=1, name='maxpool_1') # 지정한 차원을 따라 최댓값을 계산
 
             with tf.variable_scope('decoder', reuse=tf.AUTO_REUSE):
                 outputs = ops.mlp(features, [self.start_number * 8, 1])
-                outputs = tf.reshape(outputs, [-1, 1])
+                outputs = tf.reshape(outputs, [-1, 1]) # 텐서의 원소는 그대로 유지하면서 텐서의 구조를 바꿈
 
         self.reuse = True
         self.variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, self.name)
