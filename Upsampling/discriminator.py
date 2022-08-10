@@ -19,7 +19,7 @@ class Discriminator(object):
 
     def __call__(self, inputs):
         with tf.variable_scope(self.name, reuse=self.reuse):
-            inputs = tf.expand_dims(inputs,axis=2)
+            inputs = tf.expand_dims(inputs,axis=2)  # axis로 지정된 차원을 추가
             with tf.variable_scope('encoder_0', reuse=tf.AUTO_REUSE):
                 features = ops.mlp_conv(inputs, [self.start_number, self.start_number * 2])
                 features_global = tf.reduce_max(features, axis=1, keep_dims=True, name='maxpool_0')
