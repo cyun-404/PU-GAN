@@ -58,7 +58,7 @@ def up_block(inputs, up_ratio, scope='up_block', is_training=True, bn_decay=None
         grid = tf.reshape(grid, [tf.shape(net)[0], -1, 1, 2])
             #grid = tf.expand_dims(grid, axis=2)
 
-        net = tf.tile(net, [1, up_ratio, 1, 1])
+        net = tf.tile(net, [1, up_ratio, 1, 1])   # net을 기본 타일로 [1, up_ratio, 1, 1]의 각 차원을 축으로 하여 성분만큼 붙여넣어준다.
         net = tf.concat([net, grid], axis=-1)
 
         net = attention_unit(net, is_training=is_training)
@@ -227,12 +227,12 @@ def attention_unit(inputs, scope='attention_unit',is_training=True):
                             scope='conv_h', bn_decay=None)
 
 
-        s = tf.matmul(hw_flatten(g), hw_flatten(f), transpose_b=True)  # # [bs, N, N]
+        s = tf.matmul(hw_flatten(g), hw_flatten(f), transpose_b=True)  # 행렬 곱 # [bs, N, N]
 
         beta = tf.nn.softmax(s, axis=-1)  # attention map
 
         o = tf.matmul(beta, hw_flatten(h))   # [bs, N, N]*[bs, N, c]->[bs, N, c]
-        gamma = tf.get_variable("gamma", [1], initializer=tf.constant_initializer(0.0))
+        gamma = tf.get_variable("gamma", [1], initializer=tf.constant_initializer(0.0)) # 입력된 이름의 변수를 생성하거나 반환
 
         o = tf.reshape(o, shape=inputs.shape)  # [bs, h, w, C]
         x = gamma * o + inputs
