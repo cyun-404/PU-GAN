@@ -33,7 +33,7 @@ def classify_loss(pre_label,label):
 def chamfer(pcd1, pcd2, radius=1.0):
     dists_forward, _, dists_backward, _ = tf_nndistance.nn_distance(pcd1, pcd2)
     CD_dist = 0.5 * dists_forward + 0.5 * dists_backward
-    CD_dist = tf.reduce_mean(CD_dist, axis=1)
+    CD_dist = tf.reduce_mean(CD_dist, axis=1) # 특정 차원을 제거하고 평균 # 2번째 차원을 제거하고 1번째 차원에 평군을 구한다.
     CD_dist_norm = CD_dist / radius
     cd_loss = tf.reduce_mean(CD_dist_norm)
     return cd_loss
@@ -41,7 +41,7 @@ def chamfer(pcd1, pcd2, radius=1.0):
 
 def earth_mover(pcd1, pcd2,radius=1.0):
     assert pcd1.shape[1] == pcd2.shape[1]
-    num_points = tf.cast(pcd1.shape[1], tf.float32)
+    num_points = tf.cast(pcd1.shape[1], tf.float32) # 배열의 dtype을 변경 #변경될 배열 : pcd1.shape[1], 변경할 dtype: tf.float32
     match = tf_approxmatch.approx_match(pcd1, pcd2)
     cost = tf_approxmatch.match_cost(pcd1, pcd2, match)
     cost = cost/radius
