@@ -20,7 +20,9 @@ def mlp(features, layer_dims, bn=None, bn_params=None):
 
 
 def mlp_conv(inputs, layer_dims, bn=None, bn_params=None):
-    for i, num_out_channel in enumerate(layer_dims[:-1]):
+    for i, num_out_channel in enumerate(layer_dims[:-1]):  
+	# 인자로 넘어온 목록을 기준으로 인덱스와 원소를 차례대로 접근하게 해주는 반복자(iterator) 객체를 반환
+	
         inputs = tf.contrib.layers.conv2d(
             inputs, num_out_channel,
             kernel_size=1,
