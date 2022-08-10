@@ -106,10 +106,10 @@ def gen_grid(up_ratio):
             num_x = i
             num_y = up_ratio//i
             break
-    grid_x = tf.lin_space(-0.2, 0.2, num_x)
-    grid_y = tf.lin_space(-0.2, 0.2, num_y)
+    grid_x = tf.lin_space(-0.2, 0.2, num_x) 
+    grid_y = tf.lin_space(-0.2, 0.2, num_y) # -0.2 부터 0.2 구간 사이의 num 개의 고르게 분포된 값들을 생성
 
-    x, y = tf.meshgrid(grid_x, grid_y)
+    x, y = tf.meshgrid(grid_x, grid_y)      #두 텐서를 가로축은 grid_x의 크리만큼, 세로축은 grid_y의 크기만큼 broadcasting 해준다.
     grid = tf.reshape(tf.stack([x, y], axis=-1), [-1, 2])  # [2, 2, 2] -> [4, 2]
     return grid
 
