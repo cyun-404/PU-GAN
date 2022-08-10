@@ -8,7 +8,8 @@ sys.path.append(os.path.dirname(os.getcwd()))
 def mlp(features, layer_dims, bn=None, bn_params=None):
     for i, num_outputs in enumerate(layer_dims[:-1]):
         features = tf.contrib.layers.fully_connected(
-            features, num_outputs,
+		features,   # 입력, 2D 텐서[batch_size, hidden_size]
+		num_outputs,
             normalizer_fn=bn,
             normalizer_params=bn_params,
             scope='fc_%d' % i)
